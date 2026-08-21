@@ -1,4 +1,4 @@
-const CACHE = "meteo-natura-v1";
+const CACHE_NAME = "iptv-italia-v2";
 
 const FILES = [
   "./",
