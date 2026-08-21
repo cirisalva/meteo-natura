@@ -1,452 +1,1710 @@
-doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b63ce">
-<title>Meteo Natura</title> <title>Meteo Natura</title>
 
-<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
-<link rel="icon" type="image/png" href="icon-180.png">
+<title>Meteo Natura</title>
+
+<meta name="theme-color" content="#0b63ce">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Meteo Natura">
+
+<link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
 <style>
-:root{--bg:#eef6ff;--card:#fff;--text:#11243d;--muted:#64748b;--p:#0b63ce;--line:#dbe7f4;--danger:#c62828}
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#dff1ff,#f7fbff);color:var(--text)}
-.app{max-width:1000px;margin:auto;padding:18px 14px 100px}h1{margin:4px 0;font-size:2.25rem}.sub{color:var(--muted);margin:0 0 16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 10px 30px #4d7da616;margin-bottom:14px}
-.search{display:grid;grid-template-columns:1fr auto;gap:8px}.search input{padding:14px;border:1px solid var(--line);border-radius:14px;font-size:16px}
-button{border:0;border-radius:13px;padding:12px 15px;font-weight:800;background:var(--p);color:white}.secondary{background:#edf5ff;color:var(--p);border:1px solid #cfe2fb}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.status{min-height:20px;color:var(--muted);font-size:14px;margin-top:9px}
-.tabs{position:sticky;top:8px;z-index:1000;display:grid;grid-template-columns:repeat(8,1fr);gap:5px;background:#ffffffee;padding:6px;border:1px solid var(--line);border-radius:17px;backdrop-filter:blur(14px);margin-bottom:14px}
-.tab{background:transparent;color:var(--muted);padding:10px 3px;font-size:12px}.tab.active{background:var(--p);color:#fff}
-.panel{display:none}.panel.active{display:block}.hero{background:linear-gradient(135deg,#075cbf,#35a0ff);color:#fff}
-.big{font-size:4.6rem;font-weight:900;line-height:.9}.place{font-size:1.3rem;font-weight:850}.desc{opacity:.9}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.metric{background:#f5f9fd;border:1px solid var(--line);border-radius:15px;padding:12px}.metric small{display:block;color:var(--muted)}.metric b{font-size:1.08rem}
-.hero .metric{background:#ffffff1d;border-color:#ffffff30}.hero .metric small{color:#e8f3ff}
-.scroll{display:flex;gap:9px;overflow:auto;padding:4px 1px}.day{min-width:115px;border:1px solid var(--line);border-radius:15px;padding:12px;text-align:center;background:#fafcff}
-.map{height:430px;border-radius:16px;overflow:hidden;border:1px solid var(--line);margin-top:10px}.list{display:grid;gap:8px;margin-top:12px}.item{padding:12px;border:1px solid var(--line);border-radius:14px;background:#fafcff}.item b{display:block}.item small{color:var(--muted)}
-.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#eaf3ff;color:var(--p);font-weight:800;font-size:12px;margin-right:6px}
-.warn{background:#fff4e8;color:#9a4e00}.danger{background:#ffebeb;color:#a31212}
-h2{margin:2px 0 12px}.note{font-size:13px;color:var(--muted)}
-@media(max-width:700px){.tabs{overflow-x:auto;grid-template-columns:repeat(8,minmax(66px,1fr))}.grid{grid-template-columns:1fr 1fr}.tabs{position:fixed;left:10px;right:10px;bottom:10px;top:auto;margin:0}.tab{font-size:11px}.map{height:370px}.search{grid-template-columns:1fr}.actions{grid-template-columns:1fr}.big{font-size:4rem}}
+:root{
+  --bg:#eef6ff;
+  --card:#fff;
+  --text:#11243d;
+  --muted:#64748b;
+  --p:#0b63ce;
+  --line:#dbe7f4;
+  --danger:#c62828;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:linear-gradient(180deg,#dff1ff,#f7fbff);
+  color:var(--text);
+}
+
+.app{
+  max-width:1000px;
+  margin:auto;
+  padding:18px 14px 100px;
+}
+
+h1{
+  margin:4px 0;
+  font-size:2.25rem;
+}
+
+.sub{
+  color:var(--muted);
+  margin:0 0 16px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:16px;
+  box-shadow:0 10px 30px #4d7da616;
+  margin-bottom:14px;
+}
+
+.search{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+}
+
+.search input{
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  font-size:16px;
+}
+
+button{
+  border:0;
+  border-radius:13px;
+  padding:12px 15px;
+  font-weight:800;
+  background:var(--p);
+  color:white;
+}
+
+.secondary{
+  background:#edf5ff;
+  color:var(--p);
+  border:1px solid #cfe2fb;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:8px;
+}
+
+.status{
+  min-height:20px;
+  color:var(--muted);
+  font-size:14px;
+  margin-top:9px;
+}
+
+.tabs{
+  position:sticky;
+  top:8px;
+  z-index:1000;
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  gap:5px;
+  background:#ffffffee;
+  padding:6px;
+  border:1px solid var(--line);
+  border-radius:17px;
+  backdrop-filter:blur(14px);
+  margin-bottom:14px;
+}
+
+.tab{
+  background:transparent;
+  color:var(--muted);
+  padding:10px 3px;
+  font-size:12px;
+}
+
+.tab.active{
+  background:var(--p);
+  color:#fff;
+}
+
+.panel{
+  display:none;
+}
+
+.panel.active{
+  display:block;
+}
+
+.hero{
+  background:linear-gradient(135deg,#075cbf,#35a0ff);
+  color:#fff;
+}
+
+.big{
+  font-size:4.6rem;
+  font-weight:900;
+  line-height:.9;
+}
+
+.place{
+  font-size:1.3rem;
+  font-weight:850;
+}
+
+.desc{
+  opacity:.9;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:9px;
+}
+
+.metric{
+  background:#f5f9fd;
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:12px;
+}
+
+.metric small{
+  display:block;
+  color:var(--muted);
+}
+
+.metric b{
+  font-size:1.08rem;
+}
+
+.hero .metric{
+  background:#ffffff1d;
+  border-color:#ffffff30;
+}
+
+.hero .metric small{
+  color:#e8f3ff;
+}
+
+.scroll{
+  display:flex;
+  gap:9px;
+  overflow:auto;
+  padding:4px 1px;
+}
+
+.day{
+  min-width:115px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:12px;
+  text-align:center;
+  background:#fafcff;
+}
+
+.map{
+  height:430px;
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  margin-top:10px;
+}
+
+.list{
+  display:grid;
+  gap:8px;
+  margin-top:12px;
+}
+
+.item{
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fafcff;
+}
+
+.item b{
+  display:block;
+}
+
+.item small{
+  color:var(--muted);
+}
+
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:999px;
+  background:#eaf3ff;
+  color:var(--p);
+  font-weight:800;
+  font-size:12px;
+  margin-right:6px;
+}
+
+.warn{
+  background:#fff4e8;
+  color:#9a4e00;
+}
+
+.danger{
+  background:#ffebeb;
+  color:#a31212;
+}
+
+h2{
+  margin:2px 0 12px;
+}
+
+.note{
+  font-size:13px;
+  color:var(--muted);
+}
+
+@media(max-width:700px){
+
+  .tabs{
+    overflow-x:auto;
+    grid-template-columns:repeat(8,minmax(66px,1fr));
+    position:fixed;
+    left:10px;
+    right:10px;
+    bottom:10px;
+    top:auto;
+    margin:0;
+  }
+
+  .grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .tab{
+    font-size:11px;
+  }
+
+  .map{
+    height:370px;
+  }
+
+  .search{
+    grid-template-columns:1fr;
+  }
+
+  .actions{
+    grid-template-columns:1fr;
+  }
+
+  .big{
+    font-size:4rem;
+  }
+}
 </style>
 </head>
+
 <body>
+
 <div class="app">
-<header><div style="font-weight:900;color:#0b63ce;letter-spacing:.12em;font-size:12px">METEO NATURA</div><h1>Meteo, mare e Terra</h1><p class="sub">Meteo · Mare · Montagna · Terremoti · Vulcani</p></header>
+
+<header>
+  <div style="font-weight:900;color:#0b63ce;letter-spacing:.12em;font-size:12px">
+    METEO NATURA
+  </div>
+
+  <h1>Meteo, mare e Terra</h1>
+
+  <p class="sub">
+    Meteo · Mare · Montagna · Terremoti · Vulcani
+  </p>
+</header>
 
 <div class="card">
-  <div class="search"><input id="city" placeholder="Cerca città o località, es. Napoli"><button id="searchBtn">Cerca</button></div>
-  <div class="actions"><button class="secondary" id="locBtn">📍 Usa / aggiorna GPS</button><button class="secondary" id="refreshBtn">↻ Aggiorna tutto</button></div>
-<div class="actions"><button class="secondary" id="notifyBtn">🔔 Attiva notifiche</button><button class="secondary" id="testNotifyBtn">🧪 Prova notifica</button></div>
-  <div class="status" id="status">Cerca una località per iniziare.</div>
+
+  <div class="search">
+    <input id="city" placeholder="Cerca città o località, es. Napoli">
+    <button id="searchBtn">Cerca</button>
+  </div>
+
+  <div class="actions">
+    <button class="secondary" id="locBtn">
+      📍 Usa / aggiorna GPS
+    </button>
+
+    <button class="secondary" id="refreshBtn">
+      ↻ Aggiorna tutto
+    </button>
+  </div>
+
+  <div class="actions">
+    <button class="secondary" id="notifyBtn">
+      🔔 Attiva notifiche
+    </button>
+
+    <button class="secondary" id="testNotifyBtn">
+      🧪 Prova notifica
+    </button>
+  </div>
+
+  <div class="status" id="status">
+    Cerca una località per iniziare.
+  </div>
+
 </div>
 
 <nav class="tabs">
-<button class="tab active" data-p="meteo">☀️<br>Meteo</button>
-<button class="tab" data-p="mare">🌊<br>Mare</button>
-<button class="tab" data-p="montagna">🏔️<br>Montagna</button>
-<button class="tab" data-p="terremoti">🌍<br>Terremoti</button>
-<button class="tab" data-p="vulcani">🌋<br>Vulcani</button>
-<button class="tab" data-p="radar">📡<br>Radar</button>
-<button class="tab" data-p="strade">🚗<br>Strade</button>
-<button class="tab" data-p="camere">📷<br>Camere</button>
+
+  <button class="tab active" data-p="meteo">
+    ☀️<br>Meteo
+  </button>
+
+  <button class="tab" data-p="mare">
+    🌊<br>Mare
+  </button>
+
+  <button class="tab" data-p="montagna">
+    🏔️<br>Montagna
+  </button>
+
+  <button class="tab" data-p="terremoti">
+    🌍<br>Terremoti
+  </button>
+
+  <button class="tab" data-p="vulcani">
+    🌋<br>Vulcani
+  </button>
+
+  <button class="tab" data-p="radar">
+    📡<br>Radar
+  </button>
+
+  <button class="tab" data-p="strade">
+    🚗<br>Strade
+  </button>
+
+  <button class="tab" data-p="camere">
+    📷<br>Camere
+  </button>
+
 </nav>
 
 <section id="meteo" class="panel active">
-<div class="card hero">
-  <div class="place" id="place">—</div><div class="desc" id="when">—</div>
-  <div style="display:flex;align-items:center;gap:18px;margin:22px 0"><div class="big" id="temp">--°</div><div><div style="font-size:2.7rem" id="wicon">☀️</div><div id="wdesc">—</div></div></div>
-  <div class="grid">
-    <div class="metric"><small>Percepita</small><b id="feels">—</b></div>
-    <div class="metric"><small>Umidità</small><b id="hum">—</b></div>
-    <div class="metric"><small>Vento</small><b id="wind">—</b></div>
-    <div class="metric"><small>Pioggia</small><b id="rain">—</b></div>
+
+  <div class="card hero">
+
+    <div class="place" id="place">—</div>
+    <div class="desc" id="when">—</div>
+
+    <div style="display:flex;align-items:center;gap:18px;margin:22px 0">
+
+      <div class="big" id="temp">--°</div>
+
+      <div>
+        <div style="font-size:2.7rem" id="wicon">☀️</div>
+        <div id="wdesc">—</div>
+      </div>
+
+    </div>
+
+    <div class="grid">
+
+      <div class="metric">
+        <small>Percepita</small>
+        <b id="feels">—</b>
+      </div>
+
+      <div class="metric">
+        <small>Umidità</small>
+        <b id="hum">—</b>
+      </div>
+
+      <div class="metric">
+        <small>Vento</small>
+        <b id="wind">—</b>
+      </div>
+
+      <div class="metric">
+        <small>Pioggia</small>
+        <b id="rain">—</b>
+      </div>
+
+    </div>
+
   </div>
-</div>
-<div class="card"><h2>7 giorni</h2><div class="scroll" id="days"></div></div>
+
+  <div class="card">
+    <h2>7 giorni</h2>
+    <div class="scroll" id="days"></div>
+  </div>
+
 </section>
 
 <section id="mare" class="panel">
-<div class="card"><h2>🌊 Mare</h2><div class="grid">
-  <div class="metric"><small>Temperatura mare</small><b id="sst">—</b></div>
-  <div class="metric"><small>Altezza onde</small><b id="wave">—</b></div>
-  <div class="metric"><small>Periodo onde</small><b id="period">—</b></div>
-  <div class="metric"><small>Corrente</small><b id="current">—</b></div>
-</div><p class="note">I dati marini sono da modello: utili come informazione generale, non per navigazione.</p></div>
+
+  <div class="card">
+
+    <h2>🌊 Mare</h2>
+
+    <div class="grid">
+
+      <div class="metric">
+        <small>Temperatura mare</small>
+        <b id="sst">—</b>
+      </div>
+
+      <div class="metric">
+        <small>Altezza onde</small>
+        <b id="wave">—</b>
+      </div>
+
+      <div class="metric">
+        <small>Periodo onde</small>
+        <b id="period">—</b>
+      </div>
+
+      <div class="metric">
+        <small>Corrente</small>
+        <b id="current">—</b>
+      </div>
+
+    </div>
+
+  </div>
+
 </section>
 
 <section id="montagna" class="panel">
-<div class="card"><h2>🏔️ Montagna e neve</h2><div class="grid">
-  <div class="metric"><small>Quota terreno</small><b id="elev">—</b></div>
-  <div class="metric"><small>Temperatura</small><b id="mtemp">—</b></div>
-  <div class="metric"><small>Neve al suolo</small><b id="snowdepth">—</b></div>
-  <div class="metric"><small>Neve prevista oggi</small><b id="snowfall">—</b></div>
-</div><p class="note">La neve al suolo e le nevicate sono stime modellistiche; in montagna possono variare molto con quota ed esposizione.</p></div>
+
+  <div class="card">
+
+    <h2>🏔️ Montagna e neve</h2>
+
+    <div class="grid">
+
+      <div class="metric">
+        <small>Quota terreno</small>
+        <b id="elev">—</b>
+      </div>
+
+      <div class="metric">
+        <small>Temperatura</small>
+        <b id="mtemp">—</b>
+      </div>
+
+      <div class="metric">
+        <small>Neve al suolo</small>
+        <b id="snowdepth">—</b>
+      </div>
+
+      <div class="metric">
+        <small>Neve prevista oggi</small>
+        <b id="snowfall">—</b>
+      </div>
+
+    </div>
+
+  </div>
+
 </section>
 
 <section id="terremoti" class="panel">
-<div class="card"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2>🌍 Terremoti recenti</h2><p class="note">Eventi M2.5+ delle ultime 24 ore dal feed USGS.</p></div><button class="secondary" id="quakeBtn">Aggiorna</button></div>
-<div id="quakeMap" class="map"></div><div id="quakeList" class="list"></div></div>
+
+  <div class="card">
+
+    <h2>🌍 Terremoti recenti</h2>
+
+    <button class="secondary" id="quakeBtn">
+      Aggiorna
+    </button>
+
+    <div id="quakeMap" class="map"></div>
+    <div id="quakeList" class="list"></div>
+
+  </div>
+
 </section>
 
 <section id="vulcani" class="panel">
-<div class="card"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2>🌋 Vulcani</h2><p class="note">Eventi vulcanici aperti riportati da NASA EONET.</p></div><button class="secondary" id="volcanoBtn">Aggiorna</button></div>
-<div id="volcanoMap" class="map"></div><div id="volcanoList" class="list"></div></div>
+
+  <div class="card">
+
+    <h2>🌋 Vulcani</h2>
+
+    <button class="secondary" id="volcanoBtn">
+      Aggiorna
+    </button>
+
+    <div id="volcanoMap" class="map"></div>
+    <div id="volcanoList" class="list"></div>
+
+  </div>
+
 </section>
 
-
 <section id="radar" class="panel">
-<div class="card">
-  <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
-    <div><h2>📡 Radar pioggia live</h2><p class="note">Animazione radar recente centrata sulla città o sulla tua posizione.</p></div>
-    <button class="secondary" id="radarBtn">Aggiorna</button>
+
+  <div class="card">
+
+    <h2>📡 Radar pioggia live</h2>
+
+    <button class="secondary" id="radarBtn">
+      Aggiorna
+    </button>
+
+    <button class="secondary" id="radarPlay">
+      ▶︎ Play
+    </button>
+
+    <div id="radarLiveMap" class="map"></div>
+
+    <div id="radarClock" class="note">
+      Radar non caricato
+    </div>
+
   </div>
-  <div id="radarLiveMap" class="map"></div>
-  <div style="display:flex;gap:8px;align-items:center;margin-top:10px">
-    <button class="secondary" id="radarPlay">▶︎ Play</button>
-    <span class="note" id="radarClock">Radar non caricato</span>
-  </div>
-</div>
+
 </section>
 
 <section id="strade" class="panel">
-<div class="card">
-  <h2>🚗 Autostrade e traffico live</h2>
-  <p class="note">Accesso rapido ai servizi ufficiali italiani per traffico, code, incidenti, chiusure e webcam.</p>
-  <div class="grid" style="margin-top:12px">
-    <a class="metric" style="text-decoration:none;color:inherit" href="https://www.autostrade.it/it/infoviabilita/traffico-in-real-time" target="_blank" rel="noopener">
-      <small>Autostrade per l’Italia</small><b>🚦 Traffico real time</b>
-    </a>
-    <a class="metric" style="text-decoration:none;color:inherit" href="https://www.autostrade.it/it/webcam" target="_blank" rel="noopener">
-      <small>Autostrade per l’Italia</small><b>📷 Webcam live</b>
-    </a>
-    <a class="metric" style="text-decoration:none;color:inherit" href="https://www.autostrade.it/it/previsioni-traffico" target="_blank" rel="noopener">
-      <small>Autostrade per l’Italia</small><b>🛣️ Previsioni traffico</b>
-    </a>
-    <a class="metric" style="text-decoration:none;color:inherit" href="https://www.stradeanas.it/it" target="_blank" rel="noopener">
-      <small>ANAS</small><b>🚧 Viabilità stradale</b>
-    </a>
-  </div>
-  <p class="note" style="margin-top:12px">Le pagine si aprono nel sito ufficiale, così i dati restano aggiornati e affidabili.</p>
-</div>
-</section>
 
+  <div class="card">
+
+    <h2>🚗 Autostrade e traffico</h2>
+
+    <div class="grid">
+
+      <a
+        class="metric"
+        href="https://www.autostrade.it/it/infoviabilita/traffico-in-real-time"
+        target="_blank"
+        rel="noopener"
+      >
+        🚦 Traffico live
+      </a>
+
+      <a
+        class="metric"
+        href="https://www.autostrade.it/it/webcam"
+        target="_blank"
+        rel="noopener"
+      >
+        📷 Webcam
+      </a>
+
+      <a
+        class="metric"
+        href="https://www.autostrade.it/it/previsioni-traffico"
+        target="_blank"
+        rel="noopener"
+      >
+        🛣️ Previsioni traffico
+      </a>
+
+      <a
+        class="metric"
+        href="https://www.stradeanas.it/"
+        target="_blank"
+        rel="noopener"
+      >
+        🚧 ANAS
+      </a>
+
+    </div>
+
+  </div>
+
+</section>
 
 <section id="camere" class="panel">
-<div class="card">
-  <h2>📷 Telecamere città</h2>
-  <p class="note">Webcam live e telecamere pubbliche relative alla città selezionata.</p>
 
-  <div class="card" style="box-shadow:none;margin-top:12px">
-    <small style="color:var(--muted)">Città selezionata</small>
-    <div id="camCity" style="font-size:1.35rem;font-weight:900;margin-top:4px">Nessuna città selezionata</div>
-  </div>
+  <div class="card">
 
-  <div class="grid">
-    <a id="ytCam" class="metric" style="text-decoration:none;color:inherit" href="https://www.youtube.com/results?search_query=italia+live+webcam" target="_blank" rel="noopener">
-      <small>YouTube Live</small><b>🔴 Webcam città live</b>
-    </a>
+    <h2>📷 Telecamere città</h2>
 
-    <a id="skyCam" class="metric" style="text-decoration:none;color:inherit" href="https://www.skylinewebcams.com/" target="_blank" rel="noopener">
-      <small>SkylineWebcams</small><b>🏙️ Webcam panoramiche</b>
-    </a>
-
-    <a id="earthCam" class="metric" style="text-decoration:none;color:inherit" href="https://www.earthcam.com/" target="_blank" rel="noopener">
-      <small>EarthCam</small><b>🌍 Telecamere dal vivo</b>
-    </a>
-
-    <a id="trafficCam" class="metric" style="text-decoration:none;color:inherit" href="https://www.autostrade.it/it/webcam" target="_blank" rel="noopener">
-      <small>Traffico</small><b>🚗 Telecamere stradali</b>
-    </a>
-  </div>
-
-  <div class="card" style="box-shadow:none;margin-top:14px">
-    <h2 style="font-size:1.1rem">Ricerca rapida webcam</h2>
-    <div class="search">
-      <input id="camSearch" placeholder="Es. Napoli centro, Roma, Milano Duomo">
-      <button id="camSearchBtn">Cerca webcam</button>
+    <div id="camCity">
+      Nessuna città selezionata
     </div>
-    <p class="note" style="margin-top:10px">Si apre una ricerca di webcam live per la località indicata.</p>
+
+    <div class="grid" style="margin-top:15px">
+
+      <a id="ytCam" class="metric" target="_blank" rel="noopener">
+        🔴 YouTube Live
+      </a>
+
+      <a id="skyCam" class="metric" target="_blank" rel="noopener">
+        🏙️ SkylineWebcams
+      </a>
+
+      <a id="earthCam" class="metric" target="_blank" rel="noopener">
+        🌍 EarthCam
+      </a>
+
+      <a id="trafficCam" class="metric" target="_blank" rel="noopener">
+        🚗 Webcam traffico
+      </a>
+
+    </div>
+
   </div>
-</div>
+
 </section>
 
-<p class="note" style="text-align:center">Meteo/mare/quota: Open‑Meteo · Terremoti: USGS · Vulcani: NASA EONET · Mappe: OpenStreetMap</p>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
-const $=id=>document.getElementById(id);
-let pos=null, weather=null, qmap=null, vmap=null, qlayer=null, vlayer=null, locationMode="search";
-const wm={0:["Sereno","☀️"],1:["Quasi sereno","🌤️"],2:["Parzialmente nuvoloso","⛅"],3:["Coperto","☁️"],45:["Nebbia","🌫️"],48:["Nebbia","🌫️"],51:["Pioviggine","🌦️"],53:["Pioviggine","🌦️"],55:["Pioviggine","🌧️"],61:["Pioggia","🌦️"],63:["Pioggia","🌧️"],65:["Pioggia forte","🌧️"],71:["Neve","🌨️"],73:["Neve","🌨️"],75:["Neve forte","❄️"],80:["Rovesci","🌦️"],81:["Rovesci","🌧️"],82:["Rovesci forti","⛈️"],95:["Temporale","⛈️"],96:["Temporale/grandine","⛈️"],99:["Temporale forte","⛈️"]};
-function wi(c){return wm[c]||["Variabile","🌤️"]} function status(t,e=false){$("status").textContent=t;$("status").style.color=e?"#c62828":""}
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id===b.dataset.p));if(b.dataset.p==="terremoti"&&qmap)setTimeout(()=>qmap.invalidateSize(),100);if(b.dataset.p==="vulcani"&&vmap)setTimeout(()=>vmap.invalidateSize(),100);if(b.dataset.p==="radar"&&radarLiveMap){setTimeout(()=>radarLiveMap.invalidateSize(),100);loadRadar()}});
-async function geocode(name){let r=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=it&format=json`);let d=await r.json();if(!d.results?.length)throw Error("Località non trovata");let p=d.results[0];return {lat:p.latitude,lon:p.longitude,name:[p.name,p.admin1,p.country].filter(Boolean).join(", ")}}
-async function loadAll(p){pos=p;updateCameraLinks(pos.name);status("Caricamento dati…");await Promise.allSettled([loadWeather(),loadMarine(),loadElevation()]);status("Dati aggiornati.");}
-async function loadWeather(){let u=new URL("https://api.open-meteo.com/v1/forecast");u.search=new URLSearchParams({latitude:pos.lat,longitude:pos.lon,timezone:"auto",current:"temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,snow_depth",hourly:"snowfall,snow_depth,temperature_2m",daily:"weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,snowfall_sum"});let r=await fetch(u);if(!r.ok)throw Error("Meteo non disponibile");weather=await r.json();let c=weather.current,d=weather.daily,[desc,icon]=wi(c.weather_code);$("place").textContent=pos.name;$("when").textContent=new Date(c.time).toLocaleString("it-IT");$("temp").textContent=Math.round(c.temperature_2m)+"°";$("wicon").textContent=icon;$("wdesc").textContent=desc;$("feels").textContent=Math.round(c.apparent_temperature)+"°C";$("hum").textContent=c.relative_humidity_2m+"%";$("wind").textContent=Math.round(c.wind_speed_10m)+" km/h";$("rain").textContent=Number(c.precipitation).toFixed(1)+" mm";$("mtemp").textContent=Math.round(c.temperature_2m)+"°C";$("snowdepth").textContent=((c.snow_depth||0)*100).toFixed(1)+" cm";$("snowfall").textContent=Number(d.snowfall_sum?.[0]||0).toFixed(1)+" cm";notifyIfNeeded();$("days").innerHTML=d.time.slice(0,7).map((x,i)=>`<div class="day"><b>${new Date(x+"T12:00").toLocaleDateString("it-IT",{weekday:"short"})}</b><div style="font-size:28px;margin:7px">${wi(d.weather_code[i])[1]}</div><b>${Math.round(d.temperature_2m_max[i])}° / ${Math.round(d.temperature_2m_min[i])}°</b><div class="note">Pioggia ${d.precipitation_probability_max[i]||0}%</div><div class="note">Neve ${Number(d.snowfall_sum?.[i]||0).toFixed(1)} cm</div></div>`).join("")}
-async function loadMarine(){try{let u=new URL("https://marine-api.open-meteo.com/v1/marine");u.search=new URLSearchParams({latitude:pos.lat,longitude:pos.lon,timezone:"auto",current:"sea_surface_temperature,wave_height,wave_period,ocean_current_velocity"});let r=await fetch(u);if(!r.ok)throw 0;let d=await r.json(),c=d.current||{};$("sst").textContent=c.sea_surface_temperature!=null?Number(c.sea_surface_temperature).toFixed(1)+"°C":"—";$("wave").textContent=c.wave_height!=null?Number(c.wave_height).toFixed(1)+" m":"—";$("period").textContent=c.wave_period!=null?Number(c.wave_period).toFixed(1)+" s":"—";$("current").textContent=c.ocean_current_velocity!=null?Number(c.ocean_current_velocity).toFixed(1)+" km/h":"—"}catch(e){["sst","wave","period","current"].forEach(id=>$(id).textContent="Non disponibile")}}
-async function loadElevation(){try{let r=await fetch(`https://api.open-meteo.com/v1/elevation?latitude=${pos.lat}&longitude=${pos.lon}`);let d=await r.json();$("elev").textContent=d.elevation?.[0]!=null?Math.round(d.elevation[0])+" m":"—"}catch(e){$("elev").textContent="—"}}
-$("searchBtn").onclick=async()=>{try{let n=$("city").value.trim();if(!n)return;locationMode="search";await loadAll(await geocode(n))}catch(e){status(e.message,true)}};$("city").addEventListener("keydown",e=>{if(e.key==="Enter")$("searchBtn").click()});
+
+const $ = id => document.getElementById(id);
+
+let pos = null;
+let weather = null;
+let qmap = null;
+let vmap = null;
+let qlayer = null;
+let vlayer = null;
+let locationMode = "search";
+
+const wm = {
+  0:["Sereno","☀️"],
+  1:["Quasi sereno","🌤️"],
+  2:["Parzialmente nuvoloso","⛅"],
+  3:["Coperto","☁️"],
+  45:["Nebbia","🌫️"],
+  48:["Nebbia","🌫️"],
+  51:["Pioviggine","🌦️"],
+  53:["Pioviggine","🌦️"],
+  55:["Pioviggine","🌧️"],
+  61:["Pioggia","🌦️"],
+  63:["Pioggia","🌧️"],
+  65:["Pioggia forte","🌧️"],
+  71:["Neve","🌨️"],
+  73:["Neve","🌨️"],
+  75:["Neve forte","❄️"],
+  80:["Rovesci","🌦️"],
+  81:["Rovesci","🌧️"],
+  82:["Rovesci forti","⛈️"],
+  95:["Temporale","⛈️"],
+  96:["Temporale/grandine","⛈️"],
+  99:["Temporale forte","⛈️"]
+};
+
+function wi(c){
+  return wm[c] || ["Variabile","🌤️"];
+}
+
+function status(t,e=false){
+  $("status").textContent=t;
+  $("status").style.color=e?"#c62828":"";
+}
+
+document.querySelectorAll(".tab").forEach(b=>{
+
+  b.onclick=()=>{
+
+    document.querySelectorAll(".tab").forEach(x=>{
+      x.classList.toggle("active",x===b);
+    });
+
+    document.querySelectorAll(".panel").forEach(p=>{
+      p.classList.toggle("active",p.id===b.dataset.p);
+    });
+
+    if(b.dataset.p==="terremoti" && qmap){
+      setTimeout(()=>qmap.invalidateSize(),100);
+    }
+
+    if(b.dataset.p==="vulcani" && vmap){
+      setTimeout(()=>vmap.invalidateSize(),100);
+    }
+
+    if(b.dataset.p==="radar" && radarLiveMap){
+      setTimeout(()=>radarLiveMap.invalidateSize(),100);
+      loadRadar();
+    }
+
+  };
+
+});
+
+async function geocode(name){
+
+  const r=await fetch(
+    `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=it&format=json`
+  );
+
+  const d=await r.json();
+
+  if(!d.results?.length){
+    throw Error("Località non trovata");
+  }
+
+  const p=d.results[0];
+
+  return{
+    lat:p.latitude,
+    lon:p.longitude,
+    name:[p.name,p.admin1,p.country].filter(Boolean).join(", ")
+  };
+
+}
+
+async function loadAll(p){
+
+  pos=p;
+
+  updateCameraLinks(pos.name);
+
+  status("Caricamento dati…");
+
+  await Promise.allSettled([
+    loadWeather(),
+    loadMarine(),
+    loadElevation()
+  ]);
+
+  status("Dati aggiornati.");
+
+}
+
+async function loadWeather(){
+
+  const u=new URL(
+    "https://api.open-meteo.com/v1/forecast"
+  );
+
+  u.search=new URLSearchParams({
+
+    latitude:pos.lat,
+
+    longitude:pos.lon,
+
+    timezone:"auto",
+
+    current:
+      "temperature_2m,"+
+      "apparent_temperature,"+
+      "relative_humidity_2m,"+
+      "precipitation,"+
+      "weather_code,"+
+      "wind_speed_10m,"+
+      "snow_depth",
+
+    daily:
+      "weather_code,"+
+      "temperature_2m_max,"+
+      "temperature_2m_min,"+
+      "precipitation_probability_max,"+
+      "snowfall_sum"
+
+  });
+
+  const r=await fetch(u);
+
+  if(!r.ok){
+    throw Error("Meteo non disponibile");
+  }
+
+  weather=await r.json();
+
+  const c=weather.current;
+  const d=weather.daily;
+
+  const [desc,icon]=wi(c.weather_code);
+
+  $("place").textContent=pos.name;
+
+  $("when").textContent=
+    new Date(c.time).toLocaleString("it-IT");
+
+  $("temp").textContent=
+    Math.round(c.temperature_2m)+"°";
+
+  $("wicon").textContent=icon;
+
+  $("wdesc").textContent=desc;
+
+  $("feels").textContent=
+    Math.round(c.apparent_temperature)+"°C";
+
+  $("hum").textContent=
+    c.relative_humidity_2m+"%";
+
+  $("wind").textContent=
+    Math.round(c.wind_speed_10m)+" km/h";
+
+  $("rain").textContent=
+    Number(c.precipitation).toFixed(1)+" mm";
+
+  $("mtemp").textContent=
+    Math.round(c.temperature_2m)+"°C";
+
+  $("snowdepth").textContent=
+    ((c.snow_depth||0)*100).toFixed(1)+" cm";
+
+  $("snowfall").textContent=
+    Number(d.snowfall_sum?.[0]||0).toFixed(1)+" cm";
+
+  notifyIfNeeded();
+
+  $("days").innerHTML=
+    d.time.slice(0,7).map((x,i)=>`
+
+      <div class="day">
+
+        <b>
+          ${
+            new Date(x+"T12:00")
+            .toLocaleDateString("it-IT",{weekday:"short"})
+          }
+        </b>
+
+        <div style="font-size:28px;margin:7px">
+          ${wi(d.weather_code[i])[1]}
+        </div>
+
+        <b>
+          ${Math.round(d.temperature_2m_max[i])}°
+          /
+          ${Math.round(d.temperature_2m_min[i])}°
+        </b>
+
+        <div class="note">
+          Pioggia ${d.precipitation_probability_max[i]||0}%
+        </div>
+
+        <div class="note">
+          Neve ${Number(d.snowfall_sum?.[i]||0).toFixed(1)} cm
+        </div>
+
+      </div>
+
+    `).join("");
+
+}
+
+async function loadMarine(){
+
+  try{
+
+    const u=new URL(
+      "https://marine-api.open-meteo.com/v1/marine"
+    );
+
+    u.search=new URLSearchParams({
+
+      latitude:pos.lat,
+
+      longitude:pos.lon,
+
+      timezone:"auto",
+
+      current:
+        "sea_surface_temperature,"+
+        "wave_height,"+
+        "wave_period,"+
+        "ocean_current_velocity"
+
+    });
+
+    const r=await fetch(u);
+
+    const d=await r.json();
+
+    const c=d.current||{};
+
+    $("sst").textContent=
+      c.sea_surface_temperature!=null
+      ?Number(c.sea_surface_temperature).toFixed(1)+"°C"
+      :"—";
+
+    $("wave").textContent=
+      c.wave_height!=null
+      ?Number(c.wave_height).toFixed(1)+" m"
+      :"—";
+
+    $("period").textContent=
+      c.wave_period!=null
+      ?Number(c.wave_period).toFixed(1)+" s"
+      :"—";
+
+    $("current").textContent=
+      c.ocean_current_velocity!=null
+      ?Number(c.ocean_current_velocity).toFixed(1)+" km/h"
+      :"—";
+
+  }catch(e){
+
+    ["sst","wave","period","current"].forEach(id=>{
+      $(id).textContent="Non disponibile";
+    });
+
+  }
+
+}
+
+async function loadElevation(){
+
+  try{
+
+    const r=await fetch(
+      `https://api.open-meteo.com/v1/elevation?latitude=${pos.lat}&longitude=${pos.lon}`
+    );
+
+    const d=await r.json();
+
+    $("elev").textContent=
+      d.elevation?.[0]!=null
+      ?Math.round(d.elevation[0])+" m"
+      :"—";
+
+  }catch(e){
+
+    $("elev").textContent="—";
+
+  }
+
+}
+
+$("searchBtn").onclick=async()=>{
+
+  try{
+
+    const n=$("city").value.trim();
+
+    if(!n)return;
+
+    locationMode="search";
+
+    await loadAll(
+      await geocode(n)
+    );
+
+  }catch(e){
+
+    status(e.message,true);
+
+  }
+
+};
+
+$("city").addEventListener("keydown",e=>{
+
+  if(e.key==="Enter"){
+    $("searchBtn").click();
+  }
+
+});
 
 async function refreshGPS(){
+
   if(!navigator.geolocation){
-    status("GPS non supportato da questo browser.",true);
+
+    status(
+      "GPS non supportato.",
+      true
+    );
+
     return;
+
   }
 
-  if(!window.isSecureContext){
-    status("Il GPS può essere bloccato perché il file non è aperto da un sito HTTPS. Pubblica l'app online per usare il GPS correttamente.",true);
-  }else{
-    status("Aggiornamento posizione GPS…");
-  }
+  status(
+    "Aggiornamento posizione GPS…"
+  );
 
   navigator.geolocation.getCurrentPosition(
+
     async p=>{
+
       locationMode="gps";
+
       const coords={
         lat:p.coords.latitude,
         lon:p.coords.longitude,
         name:"Posizione attuale"
       };
-      try{
-        await loadAll(coords);
-        if(typeof loadRadar==="function") await loadRadar();
-        status("Posizione GPS e dati aggiornati.");
-      }catch(e){
-        status("Posizione trovata, ma alcuni dati non si sono aggiornati.",true);
+
+      await loadAll(coords);
+
+      if(typeof loadRadar==="function"){
+        await loadRadar();
       }
+
+      status(
+        "Posizione GPS e dati aggiornati."
+      );
+
     },
+
     err=>{
-      let msg="Impossibile aggiornare il GPS.";
-      if(err.code===1) msg="Permesso GPS negato. Abilita la posizione per Safari/ChatGPT.";
-      if(err.code===2) msg="Posizione GPS non disponibile.";
-      if(err.code===3) msg="Tempo scaduto durante la ricerca GPS.";
+
+      let msg=
+        "Impossibile aggiornare il GPS.";
+
+      if(err.code===1){
+        msg="Permesso GPS negato.";
+      }
+
+      if(err.code===2){
+        msg="Posizione GPS non disponibile.";
+      }
+
+      if(err.code===3){
+        msg="Tempo scaduto durante la ricerca GPS.";
+      }
+
       status(msg,true);
+
     },
-    {enableHighAccuracy:true,timeout:15000,maximumAge:0}
+
+    {
+      enableHighAccuracy:true,
+      timeout:15000,
+      maximumAge:0
+    }
+
   );
+
 }
 
 $("locBtn").onclick=refreshGPS;
 
-
 $("refreshBtn").onclick=async()=>{
-  status("Aggiornamento in corso…");
 
   if(locationMode==="gps"){
+
     await refreshGPS();
+
   }else if(pos){
-    try{
-      await loadAll(pos);
-      if(typeof loadRadar==="function") await loadRadar();
-      status("Dati aggiornati.");
-    }catch(e){
-      status("Errore durante l'aggiornamento dati.",true);
+
+    await loadAll(pos);
+
+    if(typeof loadRadar==="function"){
+      await loadRadar();
     }
+
   }else{
-    status("Prima cerca una città oppure usa la tua posizione.",true);
+
+    status(
+      "Prima cerca una città oppure usa il GPS.",
+      true
+    );
+
   }
 
   loadQuakes();
   loadVolcanoes();
+
 };
 
-function baseMap(id){let m=L.map(id).setView([20,0],2);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"© OpenStreetMap"}).addTo(m);return m}
-async function loadQuakes(){try{if(!qmap)qmap=baseMap("quakeMap");if(qlayer)qlayer.clearLayers();else qlayer=L.layerGroup().addTo(qmap);let r=await fetch("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson");let d=await r.json();let f=d.features||[];
-if(localStorage.getItem("meteoNotify")==="on" && Notification.permission==="granted"){
-  const strong=f.find(x=>(x.properties?.mag||0)>=5);
-  if(strong){
-    const qkey="quake-"+strong.id;
-    if(localStorage.getItem(qkey)!=="1"){
-      sendNotification("🌍 Terremoto M "+Number(strong.properties.mag).toFixed(1),strong.properties.place||"Evento sismico rilevato.","quake");
-      localStorage.setItem(qkey,"1");
-    }
-  }
-}
-$("quakeList").innerHTML=f.slice(0,20).map(x=>{let [lon,lat,depth]=x.geometry.coordinates,p=x.properties,cls=p.mag>=6?"danger":p.mag>=4?"warn":"";return `<div class="item"><span class="badge ${cls}">M ${p.mag?.toFixed(1)}</span><b>${p.place||"Località non indicata"}</b><small>Profondità ${Math.round(depth)} km · ${new Date(p.time).toLocaleString("it-IT")}</small></div>`}).join("")||'<div class="item">Nessun evento nel feed.</div>';f.forEach(x=>{let [lon,lat,depth]=x.geometry.coordinates,p=x.properties;L.circleMarker([lat,lon],{radius:Math.max(5,(p.mag||2)*2),color:"#c62828",fillOpacity:.55}).bindPopup(`<b>M ${p.mag}</b><br>${p.place}<br>${Math.round(depth)} km`).addTo(qlayer)})}catch(e){$("quakeList").innerHTML='<div class="item">Dati terremoti non disponibili.</div>'}}
-async function loadVolcanoes(){try{if(!vmap)vmap=baseMap("volcanoMap");if(vlayer)vlayer.clearLayers();else vlayer=L.layerGroup().addTo(vmap);let r=await fetch("https://eonet.gsfc.nasa.gov/api/v3/events/geojson?category=volcanoes&status=open&limit=30");let d=await r.json();let f=d.features||[];$("volcanoList").innerHTML=f.map(x=>{let p=x.properties||{},g=x.geometry||{};return `<div class="item"><span class="badge warn">🌋 Attivo</span><b>${p.title||"Evento vulcanico"}</b><small>${p.date?new Date(p.date).toLocaleDateString("it-IT"):"Evento aperto NASA EONET"}</small></div>`}).join("")||'<div class="item">Nessun evento vulcanico aperto restituito da EONET.</div>';f.forEach(x=>{let g=x.geometry,p=x.properties||{};if(g.type==="Point"){let [lon,lat]=g.coordinates;L.circleMarker([lat,lon],{radius:8,color:"#e65100",fillColor:"#ff9800",fillOpacity:.8}).bindPopup(`<b>${p.title||"Vulcano"}</b>`).addTo(vlayer)}})}catch(e){$("volcanoList").innerHTML='<div class="item">Dati vulcani non disponibili.</div>'}}
-$("quakeBtn").onclick=loadQuakes;$("volcanoBtn").onclick=loadVolcanoes;loadQuakes();loadVolcanoes();
+function baseMap(id){
 
-let radarLiveMap=null, radarFrames=[], radarLayerLive=null, radarIndex=0, radarTimer=null, radarMarkerLive=null;
+  const m=L.map(id).setView([20,0],2);
+
+  L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      maxZoom:18,
+      attribution:"© OpenStreetMap"
+    }
+  ).addTo(m);
+
+  return m;
+
+}
+
+async function loadQuakes(){
+
+  try{
+
+    if(!qmap){
+      qmap=baseMap("quakeMap");
+    }
+
+    if(qlayer){
+      qlayer.clearLayers();
+    }else{
+      qlayer=L.layerGroup().addTo(qmap);
+    }
+
+    const r=await fetch(
+      "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson"
+    );
+
+    const d=await r.json();
+
+    const f=d.features||[];
+
+    $("quakeList").innerHTML=
+      f.slice(0,20).map(x=>{
+
+        const [lon,lat,depth]=x.geometry.coordinates;
+
+        const p=x.properties;
+
+        return`
+
+          <div class="item">
+
+            <b>
+              🌍 M ${p.mag?.toFixed(1)}
+              ·
+              ${p.place||"Località non indicata"}
+            </b>
+
+            <small>
+              Profondità ${Math.round(depth)} km
+            </small>
+
+          </div>
+
+        `;
+
+      }).join("");
+
+    f.forEach(x=>{
+
+      const [lon,lat,depth]=x.geometry.coordinates;
+
+      const p=x.properties;
+
+      L.circleMarker(
+
+        [lat,lon],
+
+        {
+          radius:Math.max(5,(p.mag||2)*2),
+          color:"#c62828",
+          fillOpacity:.55
+        }
+
+      )
+      .bindPopup(
+        `<b>M ${p.mag}</b><br>${p.place}<br>${Math.round(depth)} km`
+      )
+      .addTo(qlayer);
+
+    });
+
+  }catch(e){
+
+    $("quakeList").innerHTML=
+      '<div class="item">Dati terremoti non disponibili.</div>';
+
+  }
+
+}
+
+async function loadVolcanoes(){
+
+  try{
+
+    if(!vmap){
+      vmap=baseMap("volcanoMap");
+    }
+
+    if(vlayer){
+      vlayer.clearLayers();
+    }else{
+      vlayer=L.layerGroup().addTo(vmap);
+    }
+
+    const r=await fetch(
+      "https://eonet.gsfc.nasa.gov/api/v3/events/geojson?category=volcanoes&status=open&limit=30"
+    );
+
+    const d=await r.json();
+
+    const f=d.features||[];
+
+    $("volcanoList").innerHTML=
+      f.map(x=>`
+
+        <div class="item">
+          <b>
+            🌋 ${x.properties?.title||"Evento vulcanico"}
+          </b>
+        </div>
+
+      `).join("");
+
+    f.forEach(x=>{
+
+      if(x.geometry.type!=="Point"){
+        return;
+      }
+
+      const [lon,lat]=x.geometry.coordinates;
+
+      L.circleMarker(
+
+        [lat,lon],
+
+        {
+          radius:8,
+          color:"#e65100",
+          fillColor:"#ff9800",
+          fillOpacity:.8
+        }
+
+      )
+      .bindPopup(
+        `<b>${x.properties?.title||"Vulcano"}</b>`
+      )
+      .addTo(vlayer);
+
+    });
+
+  }catch(e){
+
+    $("volcanoList").innerHTML=
+      '<div class="item">Dati vulcani non disponibili.</div>';
+
+  }
+
+}
+
+$("quakeBtn").onclick=loadQuakes;
+$("volcanoBtn").onclick=loadVolcanoes;
+
+loadQuakes();
+loadVolcanoes();
+
+let radarLiveMap=null;
+let radarFrames=[];
+let radarLayerLive=null;
+let radarIndex=0;
+let radarTimer=null;
+let radarMarkerLive=null;
 
 function ensureRadarMap(){
-  if(radarLiveMap) return;
-  const center=pos?[pos.lat,pos.lon]:[41.9,12.5];
-  radarLiveMap=L.map("radarLiveMap").setView(center,pos?7:5);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"© OpenStreetMap"}).addTo(radarLiveMap);
+
+  if(radarLiveMap)return;
+
+  const center=
+    pos
+    ?[pos.lat,pos.lon]
+    :[41.9,12.5];
+
+  radarLiveMap=
+    L.map("radarLiveMap")
+    .setView(center,pos?7:5);
+
+  L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      maxZoom:18,
+      attribution:"© OpenStreetMap"
+    }
+  ).addTo(radarLiveMap);
+
 }
 
 async function loadRadar(){
+
   try{
+
     ensureRadarMap();
+
     if(pos){
-      radarLiveMap.setView([pos.lat,pos.lon],8);
-      if(radarMarkerLive) radarMarkerLive.remove();
-      radarMarkerLive=L.marker([pos.lat,pos.lon]).addTo(radarLiveMap).bindPopup(pos.name||"Posizione");
+
+      radarLiveMap.setView(
+        [pos.lat,pos.lon],
+        8
+      );
+
+      if(radarMarkerLive){
+        radarMarkerLive.remove();
+      }
+
+      radarMarkerLive=
+        L.marker(
+          [pos.lat,pos.lon]
+        )
+        .addTo(radarLiveMap)
+        .bindPopup(
+          pos.name||"Posizione"
+        );
+
     }
-    $("radarClock").textContent="Caricamento radar…";
-    const r=await fetch("https://api.rainviewer.com/public/weather-maps.json",{cache:"no-store"});
-    if(!r.ok) throw Error("Radar non disponibile");
+
+    $("radarClock").textContent=
+      "Caricamento radar…";
+
+    const r=await fetch(
+      "https://api.rainviewer.com/public/weather-maps.json",
+      {cache:"no-store"}
+    );
+
     const d=await r.json();
-    radarFrames=(d.radar?.past||[]).map(f=>({...f,host:d.host}));
-    if(!radarFrames.length) throw Error("Nessun fotogramma radar");
-    radarIndex=radarFrames.length-1;
+
+    radarFrames=
+      (d.radar?.past||[])
+      .map(f=>({
+        ...f,
+        host:d.host
+      }));
+
+    if(!radarFrames.length){
+      throw Error("Nessun fotogramma radar");
+    }
+
+    radarIndex=
+      radarFrames.length-1;
+
     showRadarFrame(radarIndex);
-  }catch(e){$("radarClock").textContent=e.message||"Radar non disponibile"}
+
+  }catch(e){
+
+    $("radarClock").textContent=
+      e.message||
+      "Radar non disponibile";
+
+  }
+
 }
 
 function showRadarFrame(i){
-  if(!radarFrames.length) return;
+
+  if(!radarFrames.length)return;
+
   const f=radarFrames[i];
-  if(radarLayerLive) radarLayerLive.remove();
-  radarLayerLive=L.tileLayer(`${f.host}${f.path}/256/{z}/{x}/{y}/2/1_1.png`,{
-    tileSize:256,opacity:.72,maxNativeZoom:7,maxZoom:18,attribution:"Radar © RainViewer"
-  }).addTo(radarLiveMap);
-  $("radarClock").textContent=new Date(f.time*1000).toLocaleString("it-IT");
+
+  if(radarLayerLive){
+    radarLayerLive.remove();
+  }
+
+  radarLayerLive=
+    L.tileLayer(
+
+      `${f.host}${f.path}/256/{z}/{x}/{y}/2/1_1.png`,
+
+      {
+        tileSize:256,
+        opacity:.72,
+        maxNativeZoom:7,
+        maxZoom:18,
+        attribution:"Radar © RainViewer"
+      }
+
+    )
+    .addTo(radarLiveMap);
+
+  $("radarClock").textContent=
+    new Date(f.time*1000)
+    .toLocaleString("it-IT");
+
 }
 
 $("radarBtn").onclick=loadRadar;
-$("radarPlay").onclick=()=>{
-  ensureRadarMap();
-  if(!radarFrames.length){loadRadar();return}
-  if(radarTimer){
-    clearInterval(radarTimer);radarTimer=null;$("radarPlay").textContent="▶︎ Play";return;
-  }
-  $("radarPlay").textContent="⏸ Pausa";
-  radarIndex=0;showRadarFrame(radarIndex);
-  radarTimer=setInterval(()=>{
-    radarIndex=(radarIndex+1)%radarFrames.length;
-    showRadarFrame(radarIndex);
-  },700);
-};
 
+$("radarPlay").onclick=()=>{
+
+  ensureRadarMap();
+
+  if(!radarFrames.length){
+
+    loadRadar();
+
+    return;
+
+  }
+
+  if(radarTimer){
+
+    clearInterval(radarTimer);
+
+    radarTimer=null;
+
+    $("radarPlay").textContent=
+      "▶︎ Play";
+
+    return;
+
+  }
+
+  $("radarPlay").textContent=
+    "⏸ Pausa";
+
+  radarIndex=0;
+
+  showRadarFrame(radarIndex);
+
+  radarTimer=setInterval(()=>{
+
+    radarIndex=
+      (radarIndex+1)
+      %
+      radarFrames.length;
+
+    showRadarFrame(radarIndex);
+
+  },700);
+
+};
 
 function updateCameraLinks(cityName){
-  const name=(cityName||"").trim();
-  $("camCity").textContent=name||"Nessuna città selezionata";
-  if(!name) return;
 
-  const q=encodeURIComponent(name+" live webcam");
-  $("ytCam").href="https://www.youtube.com/results?search_query="+q;
-  $("skyCam").href="https://www.google.com/search?q="+encodeURIComponent("site:skylinewebcams.com "+name+" webcam");
-  $("earthCam").href="https://www.google.com/search?q="+encodeURIComponent("site:earthcam.com "+name+" webcam");
-  $("trafficCam").href="https://www.google.com/search?q="+encodeURIComponent(name+" webcam traffico live");
+  const name=
+    (cityName||"").trim();
+
+  $("camCity").textContent=
+    name||
+    "Nessuna città selezionata";
+
+  if(!name)return;
+
+  $("ytCam").href=
+    "https://www.youtube.com/results?search_query="+
+    encodeURIComponent(name+" live webcam");
+
+  $("skyCam").href=
+    "https://www.google.com/search?q="+
+    encodeURIComponent(
+      "site:skylinewebcams.com "+
+      name+
+      " webcam"
+    );
+
+  $("earthCam").href=
+    "https://www.google.com/search?q="+
+    encodeURIComponent(
+      "site:earthcam.com "+
+      name+
+      " webcam"
+    );
+
+  $("trafficCam").href=
+    "https://www.google.com/search?q="+
+    encodeURIComponent(
+      name+
+      " webcam traffico live"
+    );
+
 }
 
-$("camSearchBtn").onclick=()=>{
-  const q=$("camSearch").value.trim();
-  if(!q) return;
-  window.open("https://www.google.com/search?q="+encodeURIComponent(q+" live webcam"),"_blank","noopener");
-};
-
-$("camSearch").addEventListener("keydown",e=>{
-  if(e.key==="Enter") $("camSearchBtn").click();
-});
-
-
 function notifySupported(){
+
   return "Notification" in window;
+
 }
 
 async function requestNotifications(){
+
   if(!notifySupported()){
-    status("Le notifiche non sono supportate da questo browser.",true);
+
+    status(
+      "Le notifiche non sono supportate.",
+      true
+    );
+
     return false;
+
   }
 
-  try{
-    const permission=await Notification.requestPermission();
-    if(permission==="granted"){
-      localStorage.setItem("meteoNotify","on");
-      $("notifyBtn").textContent="🔔 Notifiche attive";
-      status("Notifiche attivate.");
-      return true;
-    }else{
-      localStorage.setItem("meteoNotify","off");
-      status("Permesso notifiche non concesso.",true);
-      return false;
-    }
-  }catch(e){
-    status("Impossibile attivare le notifiche.",true);
-    return false;
+  const permission=
+    await Notification.requestPermission();
+
+  if(permission==="granted"){
+
+    localStorage.setItem(
+      "meteoNotify",
+      "on"
+    );
+
+    $("notifyBtn").textContent=
+      "🔔 Notifiche attive";
+
+    status(
+      "Notifiche attivate."
+    );
+
+    return true;
+
   }
+
+  return false;
+
 }
 
-function sendNotification(title,body,tag="meteo-natura"){
-  if(!notifySupported() || Notification.permission!=="granted") return;
+function sendNotification(
+  title,
+  body,
+  tag="meteo-natura"
+){
+
+  if(
+    !notifySupported()
+    ||
+    Notification.permission!=="granted"
+  ){
+    return;
+  }
+
   try{
-    new Notification(title,{body,tag,icon:""});
+
+    new Notification(
+
+      title,
+
+      {
+        body,
+        tag,
+        icon:"./icon-192.png"
+      }
+
+    );
+
   }catch(e){}
+
 }
 
 function notifyIfNeeded(){
-  if(localStorage.getItem("meteoNotify")!=="on") return;
-  if(!weather || !pos) return;
+
+  if(
+    localStorage.getItem(
+      "meteoNotify"
+    )!=="on"
+  ){
+    return;
+  }
+
+  if(!weather||!pos){
+    return;
+  }
 
   const c=weather.current||{};
   const d=weather.daily||{};
-  const rain=Number(d.precipitation_probability_max?.[0]||0);
-  const snow=Number(d.snowfall_sum?.[0]||0);
-  const temp=Number(c.temperature_2m);
-  const code=Number(c.weather_code);
 
-  const today=new Date().toISOString().slice(0,10);
+  const rain=
+    Number(
+      d.precipitation_probability_max?.[0]
+      ||
+      0
+    );
+
+  const snow=
+    Number(
+      d.snowfall_sum?.[0]
+      ||
+      0
+    );
+
+  const temp=
+    Number(c.temperature_2m);
+
+  const code=
+    Number(c.weather_code);
 
   if([95,96,99].includes(code)){
-    const k=`storm-${today}-${pos.name}`;
-    if(localStorage.getItem(k)!=="1"){
-      sendNotification("⛈️ Temporale",`${pos.name}: temporale rilevato o previsto.`,"storm");
-      localStorage.setItem(k,"1");
-    }
+
+    sendNotification(
+      "⛈️ Temporale",
+      `${pos.name}: temporale rilevato o previsto.`,
+      "storm"
+    );
+
   }
 
-  if(rain>=70){
-    const k=`rain-${today}-${pos.name}`;
-    if(localStorage.getItem(k)!=="1"){
-      sendNotification("🌧️ Pioggia probabile",`${pos.name}: probabilità di pioggia oggi ${Math.round(rain)}%.`,"rain");
-      localStorage.setItem(k,"1");
-    }
+  else if(rain>=70){
+
+    sendNotification(
+      "🌧️ Pioggia probabile",
+      `${pos.name}: probabilità di pioggia ${Math.round(rain)}%.`,
+      "rain"
+    );
+
   }
 
-  if(snow>=1){
-    const k=`snow-${today}-${pos.name}`;
-    if(localStorage.getItem(k)!=="1"){
-      sendNotification("❄️ Neve prevista",`${pos.name}: neve prevista oggi ${snow.toFixed(1)} cm.`,"snow");
-      localStorage.setItem(k,"1");
-    }
+  else if(snow>=1){
+
+    sendNotification(
+      "❄️ Neve prevista",
+      `${pos.name}: neve prevista ${snow.toFixed(1)} cm.`,
+      "snow"
+    );
+
   }
 
-  if(temp>=35){
-    const k=`heat-${today}-${pos.name}`;
-    if(localStorage.getItem(k)!=="1"){
-      sendNotification("🔥 Caldo intenso",`${pos.name}: temperatura ${Math.round(temp)}°C.`,"heat");
-      localStorage.setItem(k,"1");
-    }
+  else if(temp>=35){
+
+    sendNotification(
+      "🔥 Caldo intenso",
+      `${pos.name}: temperatura ${Math.round(temp)}°C.`,
+      "heat"
+    );
+
   }
 
-  if(temp<=0){
-    const k=`cold-${today}-${pos.name}`;
-    if(localStorage.getItem(k)!=="1"){
-      sendNotification("🥶 Gelo",`${pos.name}: temperatura ${Math.round(temp)}°C.`,"cold");
-      localStorage.setItem(k,"1");
-    }
+  else if(temp<=0){
+
+    sendNotification(
+      "🥶 Gelo",
+      `${pos.name}: temperatura ${Math.round(temp)}°C.`,
+      "cold"
+    );
+
   }
+
 }
 
-$("notifyBtn").onclick=requestNotifications;
+$("notifyBtn").onclick=
+  requestNotifications;
 
-$("testNotifyBtn").onclick=async()=>{
-  if(Notification.permission!=="granted"){
-    const ok=await requestNotifications();
-    if(!ok) return;
-  }
-  sendNotification("🔔 Meteo Natura","Le notifiche funzionano correttamente.","test");
-};
+$("testNotifyBtn").onclick=
+  async()=>{
 
-if(notifySupported() && Notification.permission==="granted" && localStorage.getItem("meteoNotify")==="on"){
-  $("notifyBtn").textContent="🔔 Notifiche attive";
+    if(
+      Notification.permission!=="granted"
+    ){
+
+      const ok=
+        await requestNotifications();
+
+      if(!ok)return;
+
+    }
+
+    sendNotification(
+      "🌦️ Meteo Natura",
+      "Le notifiche funzionano correttamente.",
+      "test"
+    );
+
+  };
+
+if(
+  notifySupported()
+  &&
+  Notification.permission==="granted"
+  &&
+  localStorage.getItem("meteoNotify")==="on"
+){
+
+  $("notifyBtn").textContent=
+    "🔔 Notifiche attive";
+
+}
+
+if("serviceWorker" in navigator){
+
+  window.addEventListener("load",()=>{
+
+    navigator.serviceWorker
+      .register("./sw.js")
+      .catch(console.error);
+
+  });
+
 }
 
 </script>
-</body></html>
+
+</body>
+</html>
